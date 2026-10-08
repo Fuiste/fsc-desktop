@@ -7,6 +7,9 @@ metadata. includes seamless panorama galleries and a compatible command line.
 
 ## use
 
+[download the windows app](https://github.com/Fuiste/fsc-desktop/releases/latest).
+extract the whole zip and open `fsc.exe`; no separate runtime installation is needed.
+
 open `fsc.exe`, then add photos, add a folder, or drag files onto the window.
 select a thumbnail to see its original or rendered output.
 
