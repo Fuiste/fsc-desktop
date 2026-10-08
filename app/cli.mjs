@@ -21,7 +21,7 @@ export function parseArgs(args) {
 async function main() {
   const args = parseArgs(process.argv.slice(2));
   if (args.help) { console.log('fsc [image-or-folder] [-p|--panorama] [-s|--smart] [-o|--output folder]\n\njpeg framing with exposure metadata. no input: current folder → ./matted.\nexplicit input: output beside each source unless --output is provided.\nexisting files are never overwritten.'); return; }
-  if (args.version) { console.log('fsc-desktop 0.1.0'); return; }
+  if (args.version) { console.log('fsc-desktop 0.1.1'); return; }
   const files = await discover([args.input]);
   if (!files.length) throw new Error('no jpeg photos found');
   let failed = false;

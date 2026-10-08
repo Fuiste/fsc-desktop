@@ -10,6 +10,11 @@ metadata. includes seamless panorama galleries and a compatible command line.
 open `fsc.exe`, then add photos, add a folder, or drag files onto the window.
 select a thumbnail to see its original or rendered output.
 
+click **reset** in the top toolbar to clear the current batch, preview, and export
+status. your selected processing mode stays selected. the next folder gets its
+own default `matted` destination. reset never deletes source photos or exports
+and is unavailable while importing or exporting.
+
 - **frame + metadata:** white 3000 × 4000 matte, camera name in red, lens and exposure below.
 - **panorama:** two slices below 2:1, three slices at 2:1 or wider, plus the full framed photo. click the preview's slice buttons to inspect each output.
 - **smart:** panorama for images strictly wider than 2:1; ordinary framing otherwise.

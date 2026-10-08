@@ -13,5 +13,5 @@ test('cli preserves fsc flags and output defaults', () => {
 });
 test('cli entry point runs from a path containing spaces', () => {
   assert.match(execFileSync(process.execPath, ['app/cli.mjs','--help'], {encoding:'utf8'}), /fsc \[image-or-folder\]/);
-  assert.match(execFileSync(process.execPath, ['app/cli.mjs','--version'], {encoding:'utf8'}), /0\.1\.0/);
+  assert.match(execFileSync(process.execPath, ['app/cli.mjs','--version'], {encoding:'utf8'}), /0\.1\.1/);
 });

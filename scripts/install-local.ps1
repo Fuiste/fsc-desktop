@@ -8,12 +8,18 @@ $installPath = Join-Path $installRoot $package.version
 $desktopPath = [Environment]::GetFolderPath('Desktop')
 $shortcutPath = Join-Path $desktopPath 'fsc.lnk'
 if (Test-Path -LiteralPath $installPath) { throw "installation already exists: $installPath" }
-if (Test-Path -LiteralPath $shortcutPath) { throw "desktop shortcut already exists: $shortcutPath" }
+$wsh = New-Object -ComObject WScript.Shell
+if (Test-Path -LiteralPath $shortcutPath) {
+  $existingTarget = [IO.Path]::GetFullPath($wsh.CreateShortcut($shortcutPath).TargetPath)
+  $allowedPrefix = [IO.Path]::GetFullPath($installRoot).TrimEnd('\') + '\'
+  if (-not $existingTarget.StartsWith($allowedPrefix, [StringComparison]::OrdinalIgnoreCase) -or [IO.Path]::GetFileName($existingTarget) -ne 'fsc.exe') {
+    throw "desktop shortcut points outside this app's installation: $shortcutPath"
+  }
+}
 New-Item -ItemType Directory -Path $installPath -Force | Out-Null
 Get-ChildItem -LiteralPath $buildPath | Copy-Item -Destination $installPath -Recurse
 $installedExe = Join-Path $installPath 'fsc.exe'
 if ((Get-FileHash -LiteralPath $installedExe).Hash -ne (Get-FileHash -LiteralPath (Join-Path $buildPath 'fsc.exe')).Hash) { throw 'installed executable does not match the build' }
-$wsh = New-Object -ComObject WScript.Shell
 $shortcut = $wsh.CreateShortcut($shortcutPath)
 $shortcut.TargetPath = $installedExe
 $shortcut.WorkingDirectory = $installPath

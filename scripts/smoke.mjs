@@ -41,9 +41,16 @@ try {
   await page.locator('#export').click();
   await page.waitForFunction(() => document.querySelector('#status').textContent.startsWith('done'), null, { timeout: 120000 });
   assert.equal((await readdir(path.join(exportsDir,'matted'))).length,10);
-  await page.locator('#clear').click();
+  await page.locator('#reset').click();
   await page.locator('#empty').waitFor({ state: 'visible' });
   assert.equal(await page.locator('#export').isDisabled(), true);
+  assert.equal(await page.locator('#reset').isDisabled(), true);
+  assert.equal(await page.locator('#message').isHidden(), true);
+  assert.equal(await page.locator('#camera').textContent(), '—');
+  assert.equal(await page.locator('#preview').getAttribute('src'), null);
+  assert.equal(await page.locator('#open-output').isDisabled(), true);
+  assert.equal(await page.locator('input[value=smart]').isChecked(), true);
+  assert.equal((await readdir(path.join(exportsDir,'matted'))).length,10);
   await page.screenshot({ path: path.resolve('.qa','fsc-empty.png') });
   // Mock only the OS picker result; exercise the app's actual buttons and IPC.
   await app.evaluate(({ dialog }, file) => { dialog.showOpenDialog = async () => ({ canceled:false, filePaths:[file] }); }, photo);
@@ -64,6 +71,19 @@ try {
   await page.locator('#export').click();
   await page.waitForFunction(() => document.querySelector('#status').textContent.startsWith('done'), null, { timeout:120000 });
   assert.equal((await readdir(chosenOutput)).length,5);
+  await page.locator('#reset').click();
+  await page.locator('#empty').waitFor({ state:'visible' });
+  const nextFolder = path.join(root,'next-folder');
+  await makeFixture(path.join(nextFolder,'next.jpg'));
+  await app.evaluate(({ dialog }, folder) => { dialog.showOpenDialog = async () => ({ canceled:false, filePaths:[folder] }); }, nextFolder);
+  await page.locator('#folder').click();
+  await page.waitForFunction(() => document.querySelector('#output-path').textContent === 'next-folder / matted');
+  await page.locator('#loading').waitFor({ state:'hidden', timeout:60000 });
+  assert.equal(await page.locator('.thumb').count(),1);
+  await page.locator('#export').click();
+  await page.waitForFunction(() => document.querySelector('#status').textContent.startsWith('done'), null, { timeout:120000 });
+  assert.equal((await readdir(path.join(nextFolder,'matted'))).length,1);
+  assert.equal((await readdir(chosenOutput)).length,5);
   assert.deepEqual(errors, []);
-  console.log(JSON.stringify({ ok:true, checks:['app launch','metadata','renderer isolation','original/framed preview','smart panorama pages','five-file batch export','repeat export preserves files','clear queue','add/remove photo','add folder','choose output folder'], screenshot: path.resolve('.qa','fsc-desktop.png'), executablePath: executablePath || 'development' }, null, 2));
+  console.log(JSON.stringify({ ok:true, checks:['app launch','metadata','renderer isolation','original/framed preview','smart panorama pages','five-file batch export','repeat export preserves files','reset clears batch without deleting files','add/remove photo','add folder','choose output folder','reset then export next folder to its own destination'], screenshot: path.resolve('.qa','fsc-desktop.png'), executablePath: executablePath || 'development' }, null, 2));
 } finally { await app.close(); }

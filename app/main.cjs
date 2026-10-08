@@ -67,7 +67,11 @@ app.whenReady().then(async () => {
     return addPaths(paths);
   });
   handle('remove', id => { if (busy || importing) throw new Error('please wait'); photos.delete(id); return state(); });
-  handle('clear', () => { if (busy || importing) throw new Error('please wait'); photos.clear(); return state(); });
+  handle('reset', () => {
+    if (busy || importing) throw new Error('please wait');
+    photos.clear(); outputDir = ''; cancel = false;
+    return state();
+  });
   handle('output', async () => {
     if (busy) throw new Error('please wait for export to finish');
     const choice = await dialog.showOpenDialog(win, { defaultPath: outputDir || app.getPath('pictures'), properties: ['openDirectory', 'createDirectory'] });

@@ -5,7 +5,7 @@ const results = new Map();
 function showOutput(value) { const pieces = value.split(/[\\/]/).filter(Boolean); $('output-path').textContent = pieces.length ? pieces.slice(-2).join(' / ') : 'next to your photos / matted'; $('output').title = value || 'choose output folder'; $('open-output').disabled = !value; }
 function notice(message) { $('message-text').textContent = message; $('message').hidden = !message; }
 function lock() {
-  for (const id of ['add','folder','empty-add','output','clear','remove']) $(id).disabled = busy || loading || (['clear','remove'].includes(id) && !photos.length);
+  for (const id of ['add','folder','empty-add','output','reset','remove']) $(id).disabled = busy || loading || (['reset','remove'].includes(id) && !photos.length);
   document.querySelectorAll('input[name=mode]').forEach(input => input.disabled = busy || loading);
   $('export').disabled = busy || loading || !photos.length;
   $('original').disabled = $('framed').disabled = busy || !photos.length;
@@ -56,7 +56,7 @@ async function refreshPreview() {
   $('warning').textContent = photo?.warning || ''; $('warning').hidden = !photo?.warning;
   $('empty').hidden = Boolean(photo); $('image-wrap').hidden = true; $('pages').hidden = true;
   $('output-name').textContent = photo ? `${photo.name.replace(/\.jpe?g$/i,'')}-framed${mode === 'panorama' || (mode === 'smart' && photo.width/photo.height > 2) ? '-1' : ''}.jpg` : 'photo-framed.jpg';
-  if (!photo) { $('loading').hidden = true; $('caption').textContent = 'jpeg photos · processed on this computer'; return; }
+  if (!photo) { previewData = null; page = 0; $('preview').removeAttribute('src'); $('pages').replaceChildren(); $('loading').hidden = true; $('caption').textContent = 'jpeg photos · processed on this computer'; return; }
   $('loading').hidden = false;
   try {
     const data = await window.fsc.preview(photo.id, mode, original);
@@ -65,17 +65,25 @@ async function refreshPreview() {
   } catch (error) { if (request === ticket) { notice(error.message); $('caption').textContent = 'preview unavailable'; } }
   finally { if (request === ticket) $('loading').hidden = true; }
 }
-async function ingest(action) {
+async function ingest(action, reportEmpty = true) {
   if (busy || loading) return;
   loading = true; lock(); $('status').textContent = 'reading photos…';
-  try { const state = await action(); updateState(state); if (state.errors?.length) notice(state.errors.join('\n')); else if (!state.photos.length) notice('no jpeg photos found; folder selection reads only the files directly inside it'); await refreshPreview(); }
+  try { const state = await action(); updateState(state); if (state.errors?.length) notice(state.errors.join('\n')); else if (reportEmpty && !state.photos.length) notice('no jpeg photos found; folder selection reads only the files directly inside it'); await refreshPreview(); }
   catch (error) { notice(error.message); }
   finally { loading = false; lock(); }
 }
 $('add').onclick = $('empty-add').onclick = () => ingest(() => window.fsc.choose('photos'));
 $('folder').onclick = () => ingest(() => window.fsc.choose('folder'));
-$('clear').onclick = () => ingest(() => window.fsc.clear());
-$('remove').onclick = () => ingest(() => window.fsc.remove(selected));
+$('reset').onclick = () => ingest(async () => {
+  const state = await window.fsc.reset();
+  ++ticket; selected = null; results.clear(); notice('');
+  original = false;
+  $('original').classList.remove('active'); $('framed').classList.add('active');
+  $('original').setAttribute('aria-pressed', 'false'); $('framed').setAttribute('aria-pressed', 'true');
+  $('progress').value = 0; $('progress').hidden = true;
+  return state;
+}, false);
+$('remove').onclick = () => ingest(() => window.fsc.remove(selected), false);
 $('dismiss').onclick = () => notice('');
 $('output').onclick = async () => { try { showOutput(await window.fsc.output()); } catch (error) { notice(error.message); } };
 $('open-output').onclick = async () => { try { await window.fsc.openOutput(); } catch (error) { notice(error.message); } };

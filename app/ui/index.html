@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header><div class="brand"><svg viewBox="0 0 28 28" aria-hidden="true"><rect x="3" y="3" width="22" height="22" rx="2"/><path d="m4 21 7-8 5 5 4-4 5 6"/><circle cx="18" cy="9" r="2"/></svg><strong>fsc</strong><span>frame your exports</span></div><div class="actions"><button id="add" class="primary">＋ add photos</button><button id="folder">▱ add folder</button></div></header>
+  <header><div class="brand"><svg viewBox="0 0 28 28" aria-hidden="true"><rect x="3" y="3" width="22" height="22" rx="2"/><path d="m4 21 7-8 5 5 4-4 5 6"/><circle cx="18" cy="9" r="2"/></svg><strong>fsc</strong><span>frame your exports</span></div><div class="actions"><button id="reset" disabled title="clear this batch and start another folder">reset</button><button id="add" class="primary">＋ add photos</button><button id="folder">▱ add folder</button></div></header>
   <main>
     <section class="workspace">
       <div class="preview-header"><div><strong>preview</strong><span id="filename"></span></div><div class="segmented"><button id="original" aria-pressed="false">original</button><button id="framed" class="active" aria-pressed="true">framed</button></div></div>
@@ -19,7 +19,7 @@
       </div>
       <div id="caption" class="caption">jpeg photos · processed on this computer</div>
       <div id="pages" class="pages" hidden></div>
-      <div class="queue-header"><span id="count">0 photos</span><div><button id="remove" class="quiet" disabled>remove selected</button><button id="clear" class="quiet" disabled>clear</button></div></div>
+      <div class="queue-header"><span id="count">0 photos</span><div><button id="remove" class="quiet" disabled>remove selected</button></div></div>
       <div id="queue" class="queue" aria-label="photo queue"></div>
     </section>
     <aside>
