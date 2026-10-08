@@ -1,0 +1,8 @@
+allowBuilds:
+  electron: true
+  sharp: true
+  exifreader: false
+  electron-winstaller: false
+overrides:
+  effect: 3.22.2
+  sharp: 0.35.5

@@ -1,0 +1,39 @@
+{
+  "name": "fsc-desktop",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Frame JPEG exports with camera metadata and seamless panorama galleries.",
+  "author": "Fuiste",
+  "license": "MIT",
+  "type": "module",
+  "main": "app/main.cjs",
+  "bin": {"fsc": "app/cli.mjs"},
+  "packageManager": "pnpm@11.25.0",
+  "scripts": {
+    "start": "electron .",
+    "test": "node --test test/*.test.mjs",
+    "test:gui": "node scripts/smoke.mjs",
+    "pack": "electron-builder --win --x64 --dir --publish never",
+    "dist": "electron-builder --win --x64 --publish never"
+  },
+  "dependencies": {
+    "effect": "3.22.2",
+    "exposure-watermark": "0.2.0",
+    "sharp": "0.35.5"
+  },
+  "devDependencies": {
+    "electron": "44.7.0",
+    "electron-builder": "26.15.3",
+    "playwright": "1.63.0"
+  },
+  "build": {
+    "appId": "com.fuiste.fsc",
+    "productName": "fsc",
+    "files": ["app/**/*", "package.json", "LICENSE", "NOTICE.md"],
+    "directories": {"output": "dist"},
+    "asarUnpack": ["node_modules/sharp/**/*", "node_modules/@img/**/*"],
+    "npmRebuild": false,
+    "win": {"target": "zip", "icon": "assets/fsc.ico", "signAndEditExecutable": true},
+    "artifactName": "fsc-${version}-windows-${arch}.${ext}"
+  }
+}

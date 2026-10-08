@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>fsc</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header><div class="brand"><svg viewBox="0 0 28 28" aria-hidden="true"><rect x="3" y="3" width="22" height="22" rx="2"/><path d="m4 21 7-8 5 5 4-4 5 6"/><circle cx="18" cy="9" r="2"/></svg><strong>fsc</strong><span>frame your exports</span></div><div class="actions"><button id="add" class="primary">＋ add photos</button><button id="folder">▱ add folder</button></div></header>
+  <main>
+    <section class="workspace">
+      <div class="preview-header"><div><strong>preview</strong><span id="filename"></span></div><div class="segmented"><button id="original" aria-pressed="false">original</button><button id="framed" class="active" aria-pressed="true">framed</button></div></div>
+      <div id="stage" class="stage">
+        <div id="empty"><svg viewBox="0 0 64 64" aria-hidden="true"><rect x="7" y="7" width="50" height="50" rx="5"/><path d="m8 48 16-18 12 12 9-10 12 14"/><circle cx="42" cy="21" r="5"/></svg><h1>give your photos a little space.</h1><p>drop jpeg photos or a folder here</p><button id="empty-add">choose photos</button><small>white mattes, camera metadata, and panorama galleries</small></div>
+        <div id="image-wrap" hidden><img id="preview" alt="selected photo preview"></div>
+        <div id="loading" hidden><span class="spinner"></span><span>rendering preview…</span></div>
+      </div>
+      <div id="caption" class="caption">jpeg photos · processed on this computer</div>
+      <div id="pages" class="pages" hidden></div>
+      <div class="queue-header"><span id="count">0 photos</span><div><button id="remove" class="quiet" disabled>remove selected</button><button id="clear" class="quiet" disabled>clear</button></div></div>
+      <div id="queue" class="queue" aria-label="photo queue"></div>
+    </section>
+    <aside>
+      <section class="settings"><h2>mode</h2>
+        <label class="mode"><input type="radio" name="mode" value="watermark" checked><span>frame + metadata<small>white matte · 3:4</small></span></label>
+        <label class="mode"><input type="radio" name="mode" value="panorama"><span>panorama<small>gallery slices + full image</small></span></label>
+        <label class="mode"><input type="radio" name="mode" value="smart"><span>smart<small>panorama when wider than 2:1</small></span></label>
+      </section>
+      <section class="settings metadata"><h2>metadata</h2><p>read automatically from each photo</p><dl><dt>camera</dt><dd id="camera">—</dd><dt>lens</dt><dd id="lens">—</dd><dt>exposure</dt><dd id="exposure">—</dd></dl><div id="warning" class="warning" hidden></div></section>
+      <section class="destination"><h2>save to</h2><button id="output" title="choose output folder"><span id="output-path">next to your photos / matted</span><span>▱</span></button><small id="output-name">photo-framed.jpg</small></section>
+      <div class="export-actions"><button id="export" class="primary" disabled>export photos</button><button id="cancel" hidden>stop after current photo</button><button id="open-output" disabled>open output folder</button></div>
+    </aside>
+  </main>
+  <div id="message" role="status" hidden><span id="message-text"></span><button id="dismiss" aria-label="dismiss message">×</button></div>
+  <footer><span id="status" aria-live="polite">ready · add photos to get started</span><progress id="progress" max="1" value="0" hidden></progress><span class="local">local processing</span></footer>
+  <script src="renderer.js"></script>
+</body>
+</html>
